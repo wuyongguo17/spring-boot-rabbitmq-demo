@@ -2,6 +2,7 @@ package com.gdjs.gold.controller;
 
 import com.gdjs.gold.deadletter.DeadLetterSend;
 import com.gdjs.gold.demo1.Send;
+import com.gdjs.gold.fanout.FanoutSend;
 import com.gdjs.gold.response.ResponseBean;
 import com.gdjs.gold.topicexchange.TopicSend;
 import com.gdjs.gold.workqueue.WorkQueueSend;
@@ -27,6 +28,9 @@ public class RabbitMqController {
     @Autowired
     private DeadLetterSend deadLetterSend;
 
+    @Autowired
+    private FanoutSend fanoutSend;
+
     @RequestMapping("/hello")
     public ResponseBean hello(){
         send.send();
@@ -49,6 +53,12 @@ public class RabbitMqController {
     @RequestMapping("/deadLetter")
     public ResponseBean deadLetter(){
         deadLetterSend.send();
+        return ResponseBean.success("send message done");
+    }
+
+    @RequestMapping("/fanout")
+    public ResponseBean fanoutExchange(){
+        fanoutSend.send();
         return ResponseBean.success("send message done");
     }
 }

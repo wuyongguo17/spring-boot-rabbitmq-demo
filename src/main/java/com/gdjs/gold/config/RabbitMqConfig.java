@@ -23,6 +23,7 @@ public class RabbitMqConfig {
         return new Queue("workQueue");
     }
 
+//==========================topicExchange=============================================
     @Bean
     public Queue topicQueue1(){
         return new Queue("topicQueue1");
@@ -52,6 +53,35 @@ public class RabbitMqConfig {
     public Binding topicBinding3(){
         return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("lazy.#");
     }
+
+//==========================fanoutExchange=============================================
+    @Bean
+    public Queue fanoutQueue1(){
+        return new Queue("fanoutQueue1");
+    }
+
+    @Bean
+    public Queue fanoutQueue2(){
+        return new Queue("fanoutQueue2");
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange(){
+        return new FanoutExchange("fanoutExchange");
+    }
+
+    @Bean
+    public Binding fanoutBinding1(){
+        return BindingBuilder.bind(fanoutQueue1()).to(fanoutExchange());
+    }
+
+    @Bean
+    public Binding fanoutBinding2(){
+        return BindingBuilder.bind(fanoutQueue2()).to(fanoutExchange());
+    }
+
+
+//===========================死信队列=================================================
 
     //创建directExchange
     @Bean("deadLetterExchange")
