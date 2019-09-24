@@ -70,9 +70,15 @@ public class RabbitMqConfig {
         return new FanoutExchange("fanoutExchange");
     }
 
-    @Bean
+   /* @Bean
     public Binding fanoutBinding1(){
         return BindingBuilder.bind(fanoutQueue1()).to(fanoutExchange());
+    }*/
+
+
+    @Bean
+    public Binding fanoutBinding1(FanoutExchange fanoutExchange,Queue fanoutQueue1){
+        return BindingBuilder.bind(fanoutQueue1).to(fanoutExchange);
     }
 
     @Bean
