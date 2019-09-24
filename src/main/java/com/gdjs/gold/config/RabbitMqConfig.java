@@ -14,59 +14,63 @@ import java.util.Map;
 @Configuration
 public class RabbitMqConfig {
     @Bean
-    public Queue helloQueue(){
+    public Queue helloQueue() {
         return new Queue("hello");
     }
 
+
+//==========================workQueue========================
     @Bean
-    public Queue workQueue(){
+    public Queue workQueue() {
         return new Queue("workQueue");
     }
 
+
 //==========================topicExchange=============================================
     @Bean
-    public Queue topicQueue1(){
+    public Queue topicQueue1() {
         return new Queue("topicQueue1");
     }
 
     @Bean
-    public Queue topicQueue2(){
+    public Queue topicQueue2() {
         return new Queue("topicQueue2");
     }
 
     @Bean
-    public TopicExchange topicExchange(){
+    public TopicExchange topicExchange() {
         return new TopicExchange("topicExchange");
     }
 
     @Bean
-    public Binding topicBinding1(){
+    public Binding topicBinding1() {
         return BindingBuilder.bind(topicQueue1()).to(topicExchange()).with("*.orange.*");
     }
 
     @Bean
-    public Binding topicBinding2(){
+    public Binding topicBinding2() {
         return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("*.*.rabbit");
     }
 
     @Bean
-    public Binding topicBinding3(){
+    public Binding topicBinding3() {
         return BindingBuilder.bind(topicQueue2()).to(topicExchange()).with("lazy.#");
     }
 
+
 //==========================fanoutExchange=============================================
     @Bean
-    public Queue fanoutQueue1(){
+    public Queue fanoutQueue1() {
         return new Queue("fanoutQueue1");
     }
 
     @Bean
-    public Queue fanoutQueue2(){
+    public Queue fanoutQueue2() {
         return new Queue("fanoutQueue2");
     }
 
-    @Bean
-    public FanoutExchange fanoutExchange(){
+    @Bean(name = "fanoutExchange")
+    public FanoutExchange fanoutExchange() {
         return new FanoutExchange("fanoutExchange");
     }
 
@@ -77,17 +81,38 @@ public class RabbitMqConfig {
 
 
     @Bean
-    public Binding fanoutBinding1(FanoutExchange fanoutExchange,Queue fanoutQueue1){
+    public Binding fanoutBinding1(FanoutExchange fanoutExchange, Queue fanoutQueue1) {
         return BindingBuilder.bind(fanoutQueue1).to(fanoutExchange);
     }
 
     @Bean
-    public Binding fanoutBinding2(){
+    public Binding fanoutBinding2() {
         return BindingBuilder.bind(fanoutQueue2()).to(fanoutExchange());
     }
 
 
-//===========================死信队列=================================================
+//============================headersExchange==========================================
+    @Bean
+    public HeadersExchange headersExchange() {
+        return new HeadersExchange("HEADERS_EXCHANGE");
+    }
+
+    @Bean
+    public Queue headerQueue1() {
+        return new Queue("HEADER_QUEUE", true);
+    }
+
+    @Bean
+    public Binding headerBinding() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("header1", "value1");
+        map.put("header2", "value2");
+        return BindingBuilder.bind(headerQueue1()).to(headersExchange()).whereAll(map).match();
+    }
+
+
+
+//===========================死信队列===================================================
 
     //创建directExchange
     @Bean("deadLetterExchange")
@@ -121,7 +146,7 @@ public class RabbitMqConfig {
     public Binding deadLetterBinding() {
         //两种方式都可以
 //        return new Binding("DL_QUEUE", Binding.DestinationType.QUEUE, "DL_EXCHANGE", "DL_KEY", null);
-        return BindingBuilder.bind(deadLetterQueue()).to((DirectExchange)deadLetterExchange()).with("DL_KEY");
+        return BindingBuilder.bind(deadLetterQueue()).to((DirectExchange) deadLetterExchange()).with("DL_KEY");
     }
 
     /**

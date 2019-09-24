@@ -3,6 +3,7 @@ package com.gdjs.gold.controller;
 import com.gdjs.gold.deadletter.DeadLetterSend;
 import com.gdjs.gold.demo1.Send;
 import com.gdjs.gold.fanout.FanoutSend;
+import com.gdjs.gold.headexchange.HeadersExchangeSend;
 import com.gdjs.gold.response.ResponseBean;
 import com.gdjs.gold.topicexchange.TopicSend;
 import com.gdjs.gold.workqueue.WorkQueueSend;
@@ -30,6 +31,9 @@ public class RabbitMqController {
 
     @Autowired
     private FanoutSend fanoutSend;
+
+    @Autowired
+    private HeadersExchangeSend headersExchangeSend;
 
     @RequestMapping("/hello")
     public ResponseBean hello(){
@@ -59,6 +63,12 @@ public class RabbitMqController {
     @RequestMapping("/fanout")
     public ResponseBean fanoutExchange(){
         fanoutSend.send();
+        return ResponseBean.success("send message done");
+    }
+
+    @RequestMapping("/headers")
+    public ResponseBean headersExchange(){
+        headersExchangeSend.send();
         return ResponseBean.success("send message done");
     }
 }
